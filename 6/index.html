@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="three.min.js"></script>
+  <script src="dat.gui.min.js"></script>
+</head>
+<body>
+  <style>
+    body{
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+  <canvas id="canvas"></canvas>
+  <script>
+    window.onload = function () {
+      var width = window.innerWidth, height = window.innerHeight;
+      var canvas = document.getElementById('canvas');
+
+      canvas.setAttribute('width', width);
+      canvas.setAttribute('height', height);
+
+      var ball = {
+        rotationY: 0,
+        rotationX: 0,
+        rotationZ: 0,
+        positionX: 0,
+        positionY: 0,
+        positionZ: 0
+      };
+
+      var gui = new dat.GUI();
+      gui.add(ball, 'rotationY').min(-0.1).max(0.1).step(0.001);
+      gui.add(ball, 'rotationX').min(-0.1).max(0.1).step(0.001);
+      gui.add(ball, 'rotationZ').min(-0.1).max(0.1).step(0.001);
+      gui.add(ball, 'positionX').min(-5).max(5).step(0.1);
+      gui.add(ball, 'positionY').min(-5).max(5).step(0.1);
+      gui.add(ball, 'positionZ').min(-5).max(5).step(0.1);
+
+      var renderer = new THREE.WebGLRenderer({canvas: canvas});
+      renderer.setClearColor(0x000000);
+      
+      var scene = new THREE.Scene();
+
+      var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 5000);
+      camera.position.set(0, 0, 1500); 
+      
+      var light = new THREE.AmbientLight(0xffffff);
+      scene.add(light);
+
+      var plane_geom = new THREE.SphereGeometry(200, 32, 32);
+      var plane_mat = new THREE.MeshBasicMaterial({color: 0xffffff, vertexColors: THREE.FaceColors});
+      
+      for(var i = 0; i < plane_geom.faces.length; i++) {
+        plane_geom.faces[i].color.setRGB(Math.random(), Math.random(), Math.random());
+      }
+
+      var plane = new THREE.Mesh(plane_geom, plane_mat);
+      plane.position.x = -800;
+      scene.add(plane);
+
+      animate();
+
+      function animate () {
+        requestAnimationFrame(animate);
+        plane.rotation.z += ball.rotationZ;
+        plane.rotation.x += ball.rotationX;
+        plane.rotation.y += ball.rotationY;
+        plane.position.x += ball.positionX;
+        plane.position.y += ball.positionY;
+        plane.position.z += ball.positionZ;
+        renderer.render(scene, camera);
+      }
+    }
+  </script>
+</body>
+</html>
