@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="../three.js/build/three.min.js"></script>
+</head>
+<body>
+  <style>
+      body, canvas{
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+        background: #fff;
+      }
+  </style>
+  <script>
+    var scene, camera, render, container;
+    var width = window.innerWidth, height = window.innerHeight;
+
+
+    container = document.createElement('div');
+    document.body.appendChild(container);
+
+    camera = new THREE.PerspectiveCamera(45, width/height, 1, 1000000) // маштаб, пропорция, вблизи, глубина
+    camera.position.z = 400;
+    camera.position.y = 10;
+    scene = new THREE.Scene(); //create scene
+
+    var light = new THREE.SpotLight();
+    light.position.set(-200,200,200);
+    light.castShadow = true;
+    scene.add(light);
+    
+    var plane = new THREE.Mesh(new THREE.PlaneGeometry(400,200,100,100), new THREE.MeshLambertMaterial({color: 0x008cf0}));
+    plane.position.y = -85;
+    plane.receiveShadow = true;
+    plane.rotation.x = -Math.PI / 2;
+    scene.add(plane);
+
+    var cube = new THREE.Mesh(new THREE.CubeGeometry(50,50,50,20,20,20), new THREE.MeshLambertMaterial({color: 0x42aaff}));
+    cube.position.y = -60;
+    cube.castShadow = true;
+    cube.receiveShadow = true;
+    scene.add(cube);
+
+    render = new THREE.WebGLRenderer();
+    render.shadowMap.enabled = true;
+    render.setSize(width, height);   
+    container.appendChild(render.domElement);
+    animation();
+
+    function animation () {
+      requestAnimationFrame(animation);
+      cube.rotation.y += 0.02;
+      render.render(scene, camera);
+    }
+  </script>
+  
+</body>
+</html>

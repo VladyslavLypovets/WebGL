@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="three.js/build/three.min.js"></script>
+</head>
+<body>
+  <style>
+    body{
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+
+  <script>
+    var scene, camera, render, container;
+    var width = window.innerWidth, height = window.innerHeight;
+
+    
+
+    container = document.createElement('div');
+    document.body.appendChild(container);
+
+    camera = new THREE.PerspectiveCamera(45, width/height, 1, 1000000) // маштаб, пропорция, вблизи, глубина
+    camera.position.z = 10000;
+    scene = new THREE.Scene(); //create scene
+
+
+    // Stars
+    var stars_geom = new THREE.Geometry();
+    var stars_mat = new THREE.PointsMaterial({color: 0xbbbbbb, opacity: 0.1, size: 1, sizeAttenuation: false});
+    var stars;
+
+    for(var i = 0; i < 45000; i++){
+      var vertex = new THREE.Vector3();
+      vertex.x = Math.random() * 2 - 1;
+      vertex.y = Math.random() * 2 - 1;
+      vertex.z = Math.random() * 2 - 1;
+      vertex.multiplyScalar(6800);
+      stars_geom.vertices.push(vertex);
+    }
+
+    stars = new THREE.Points(stars_geom, stars_mat);
+    stars.scale.set(50,50,50);
+    scene.add(stars);
+
+    var stars_geom2 = new THREE.Geometry();
+    var stars_mat2 = new THREE.PointsMaterial({color: 0xbbbbbb, opacity: 0.1, size: 1, sizeAttenuation: false});
+    var stars2;
+
+    for(var i = 0; i < 10000; i++){
+      var vertex = new THREE.Vector3();
+      vertex.x = Math.random() * 2 - 1;
+      vertex.y = Math.random() * 2 - 1;
+      vertex.z = Math.random() * 2 - 1;
+      vertex.multiplyScalar(6800);
+      stars_geom2.vertices.push(vertex);
+    }
+
+    stars2 = new THREE.Points(stars_geom2, stars_mat2);
+    stars2.scale.set(70,150,100);
+    scene.add(stars2);
+
+    
+    // Sun
+    var sun, sun_geom, sun_mat, sun_texture;
+    sun_texture = new THREE.Texture();
+    sun_loader = new THREE.ImageLoader();
+    sun_loader.load('sun.jpg', function (image) {
+      sun_texture.image = image;
+      sun_texture.needsUpdate = true;
+    });
+    sun_texture.anisotropy = 8;
+    sun_geom = new THREE.SphereGeometry(2300,80,80);
+    sun_mat = new THREE.MeshBasicMaterial({map: sun_texture, overdraw: true});
+    sun = new THREE.Mesh(sun_geom,sun_mat);
+    scene.add(sun);
+    
+    // Earth
+    var earth, earth_geom, earth_mat, earth_texture, earth_loader;
+    earth_texture = new THREE.Texture();
+    earth_loader = new THREE.ImageLoader();
+    earth_loader.load('texture_sphere_earth.jpg', function (image) {
+      earth_texture.image = image;
+      earth_texture.needsUpdate = true;
+    });
+    earth_texture.anisotropy = 8;
+    earth_geom = new THREE.SphereGeometry(200,20,20);
+    earth_mat = new THREE.MeshBasicMaterial({map: earth_texture, overdraw: true});
+    earth = new THREE.Mesh(earth_geom,earth_mat);
+    scene.add(earth);
+      
+
+
+    render = new THREE.WebGLRenderer();
+    render.setSize(window.innerWidth, window.innerHeight);   
+    container.appendChild(render.domElement);
+    var t = 0, y = 0;
+
+    // document.addEventListener('mousemove', function(event){
+    //   y = parseInt(event.offsetY)
+    // })
+
+    animation();
+
+    function animation () {
+      requestAnimationFrame(animation);
+
+      sun.rotation.y += 0.001;
+      earth.rotation.y += 0.005;
+      earth.position.x = Math.sin(t * 0.1) * 5000;
+      earth.position.z = Math.cos(t * 0.1) * 4800;
+
+      // camera.position.y = y * 5;
+      // camera.position.x = earth.position.x;
+      // camera.position.z = earth.position.z;
+      // camera.lookAt(scene.position);
+
+      t += Math.PI / 180 * 2;
+      
+      render.render(scene, camera);
+    }
+
+  </script>
+</body>
+</html>

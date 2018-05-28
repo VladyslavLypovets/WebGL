@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="../three.js/build/three.min.js"></script>
+</head>
+<body>
+  <style>
+    body{
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+
+  <script>
+    window.onload = init;
+    var scene, camera, render;
+
+    function init() {
+      container = document.createElement('div');
+      document.body.appendChild(container);
+
+      scene = new THREE.Scene(); //create scene
+      camera = new THREE.PerspectiveCamera(65, window.innerWidth/window.innerHeight, 0.1, 2000) // маштаб, пропорция, вблизи, глубина
+      camera.position.y = 150;
+      camera.position.z = 1500;
+      
+      var line_geometry = new THREE.Geometry(); //  create figure
+      line_geometry.vertices.push(new THREE.Vector3(0,0,0)); // x, y, z create vector
+      line_geometry.vertices.push(new THREE.Vector3(0,200,0));
+      line_geometry.vertices.push(new THREE.Vector3(30,200,0));
+      
+      var material_line = new THREE.LineBasicMaterial({color:0xffffff,linewidth:10,opacity:1});
+      var line = new THREE.Line(line_geometry, material_line);
+
+      scene.add(line);
+
+      var geometry = new THREE.PlaneGeometry(window.innerWidth, window.innerHeight);
+      geometry.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI/2));
+      var material = new THREE.MeshBasicMaterial({color:0xe0e0e0});
+      var plane = new THREE.Mesh(geometry, material);
+      scene.add(plane);
+
+      render = new THREE.WebGLRenderer();
+      render.setSize(window.innerWidth, window.innerHeight);   
+      container.appendChild(render.domElement);
+      render.render(scene, camera);
+    }
+
+  </script>
+</body>
+</html>

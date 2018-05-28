@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script src="../three.js/build/three.min.js"></script>
+</head>
+<body>
+  <style>
+    body{
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+
+  <script>
+    var scene, camera, render;
+    container = document.createElement('div');
+    document.body.appendChild(container);
+
+    scene = new THREE.Scene(); //create scene
+    camera = new THREE.PerspectiveCamera(100, window.innerWidth/window.innerHeight, 1, 1000) // маштаб, пропорция, вблизи, глубина
+    camera.position.y = 0;
+    camera.position.z = 600;
+
+
+    var cube_side_size = 0.5;
+    var cube_geometry = new THREE.SphereGeometry(cube_side_size);
+    var cube_texture = new THREE.MeshNormalMaterial();
+    var group = new THREE.Object3D();
+
+    for(var i = 0; i < 5000; i++) {
+      var cube = new THREE.Mesh(cube_geometry, cube_texture);
+      cube.position.y = Math.random() * 1000 - 500;
+      cube.position.x = Math.random() * 1000 - 500;
+      cube.position.z = Math.random() * 2000 - 1500;
+      cube.rotation.y = Math.random() * 100;
+      cube.rotation.z = Math.random() * 100;
+      group.add(cube);
+    }
+    scene.add(group);
+
+    render = new THREE.WebGLRenderer();
+    render.setSize(window.innerWidth, window.innerHeight);   
+    container.appendChild(render.domElement);
+    animation();
+
+    function animation(){
+      requestAnimationFrame(animation);
+      camera.position.z -= 1;
+      if (camera.position.z < -2000) {
+        camera.position.z = 600
+      }
+      render.render(scene, camera);
+    }
+
+  </script>
+</body>
+</html>
